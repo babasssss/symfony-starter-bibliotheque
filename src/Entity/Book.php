@@ -20,6 +20,7 @@ class Book
     private ?string $title = null;
 
     #[ORM\Column(name: 'date_of_publication', type: 'date')]
+    #[Assert\LessThanOrEqual ("today")] //Le contraire est : #[Assert\GreaterThanOrEqual ("today")] équivalent à >=
     private ?\DateTimeInterface $dateOfPublication = null;
 
     public function getId(): ?int

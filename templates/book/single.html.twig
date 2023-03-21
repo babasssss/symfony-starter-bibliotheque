@@ -2,5 +2,23 @@
 {% extends 'book/index.html.twig' %}
 
 {% block main %}
-	<h2>Fiche du livre ??</h2>
+	<h2>Fiche du livre</h2>
+		<ul>
+			<h2>Titre : <em>{{ book.title }}</em></h2>
+			<h2>Date de publication : <em>{{ book.dateOfPublication.format('d/m/Y')  }}</em></h2>
+		</ul>
+
+		<ul>
+			<em><a href="{{url('list_books')}}">Listing des livres</a></em>
+
+			{# Formulaire de suppression #}
+			{{ form_start(delete_form) }}
+				{# Gestions Error #}
+				{{ form_errors(delete_form) }}
+				{# Submit Form #}
+				{{ form_widget(delete_form) }}
+			{{ form_end(delete_form) }}
+			
+		</ul>
+
 {% endblock %}

@@ -4,11 +4,14 @@ namespace App\Controller;
 
 use App\Form\AddBook;
 use App\Entity\Book;
+use App\Form\DeleteBook;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+
+
 
 class BookController extends AbstractController
 {
@@ -53,6 +56,7 @@ class BookController extends AbstractController
             $em->persist($book);
             //Repercuter ces modifications en base
             $em->flush();
+            return $this->redirectToRoute('list_books');
         }
 
         //Génére la réponse HTML avec un template Twig à qui je passe le formulaire à "rendre"
@@ -60,13 +64,35 @@ class BookController extends AbstractController
             'form' => $form
         ));
     }
-
+            
+        
     /**
      * Route pour ajouter un livre. Par exemple, books/1, books/138, etc.
      */
-    #[Route('/books/{id}', name: 'single_book', methods: ['GET', 'DELETE', 'PUT'], requirements: ['id' => '\d+'])]
-    public function singleBook(): Response
+    #[Route('/books/{id}', name: 'single_book', methods: ['GET', 'DELETE', 'PUT', 'POST'], requirements: ['id' => '\d+'])]
+    public function singleBook(EntityManagerInterface $em, Request $request, $id): Response
     {
-        return $this->render('book/single.html.twig');
+        $repository = $em->getRepository('App\Entity\Book');
+        $book = $repository->findOneBy(['id' => $id]);
+        //dd($book)
+        
+        //Crée un formulaire de supression d'un objet
+        $deleteForm = $this->createForm(DeleteBook::class);
+
+        //Traiter le formulaire soumis s'il est valide
+        $deleteForm->handleRequest($request);
+
+        if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
+            // Suppression du livre et redirection vers la liste des livres
+            $em->remove($book);
+            $em->flush();
+            return $this->redirectToRoute('list_books');
+        }
+
+        return $this->render('book/single.html.twig', [
+            'book' => $book,
+            'delete_form' => $deleteForm->createView(),
+        ]);
+
     }
 }
