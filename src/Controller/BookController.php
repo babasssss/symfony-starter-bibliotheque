@@ -76,6 +76,10 @@ class BookController extends AbstractController
         $book = $repository->findOneBy(['id' => $id]);
         //dd($book)
         
+        if (!$book) {
+            return new Response(null, 204); 
+        }
+
         //Crée un formulaire de supression d'un objet
         $deleteForm = $this->createForm(DeleteBook::class);
 
