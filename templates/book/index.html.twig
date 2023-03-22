@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Bibliothèque
+{% block title %}| Bibliothèque | 
 {% endblock %}
 
 {% block body %}
 
 	{% block h1 %}
-		<h1>Bibliothèque</h1>
+		<h1><a href="{{ url('list_books') }}">Bibliothèque</a> | <a href="{{ url('app_logout') }}">Déconnexion</a></h1>
 	{% endblock %}
 
 	{# url() => url absolue (avec le nom de domaine, par exemple url('add_book') donne "https://127.0.0.1/books/add") #}
@@ -19,7 +19,8 @@
 		<ul>
 			{% for book in books %}
 				<li>
-					<a href="{{ url('single_book', {'id': book.id}) }}">{{book.title}}</a>
+					{{book.title}}
+					<a href="{{ url('single_book', {'id': book.id}) }}">Gérer</a>
 				</li>
 			{% endfor %}
 
